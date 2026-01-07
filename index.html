@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>جين ومحمد - احتفال ملكي</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=El+Messiri:wght@400;700&family=Montserrat:wght@100;300;400&display=swap');
+
+        :root {
+            --bg-color: #050505;
+            --primary-gold: #d4af37;
+            --soft-gold: #f1e5ac;
+            --glow-color: rgba(212, 175, 55, 0.4);
+            --white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-color);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--white);
+            touch-action: none;
+        }
+
+        /* خلفية المعالم بتأثير العمق */
+        .germany-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .landmark-img {
+            position: absolute;
+            width: 85vw;
+            max-width: 650px;
+            border-radius: 40px;
+            filter: blur(15px) brightness(0.2) contrast(1.1);
+            opacity: 0;
+            transition: opacity 3s ease, filter 3s ease;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+        }
+
+        .landmark-img.active {
+            opacity: 0.25;
+            filter: blur(5px) brightness(0.4) contrast(1);
+        }
+
+        /* محرك الجسيمات */
+        #nebula-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            mix-blend-mode: screen;
+        }
+
+        .hero-section {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            width: 90%;
+            max-width: 550px;
+            perspective: 2000px;
+        }
+
+        /* إطار التصميم الملكي */
+        .signature-frame {
+            position: relative;
+            padding: 80px 40px;
+            background: radial-gradient(circle at top left, rgba(255,255,255,0.05), transparent);
+            border: 0.5px solid rgba(212, 175, 55, 0.15);
+            border-radius: 20px;
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 0 40px rgba(212, 175, 55, 0.05);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease;
+        }
+
+        /* شعاع الضوء الدوار */
+        .light-sweep {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.1), transparent 40%);
+            animation: rotateSweep 10s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes rotateSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .top-label {
+            font-family: 'Cinzel', serif;
+            font-size: 0.75rem;
+            letter-spacing: 15px;
+            color: var(--primary-gold);
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .names-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .name-part {
+            font-family: 'El Messiri', sans-serif;
+            font-size: clamp(4rem, 18vw, 7.5rem);
+            line-height: 0.9;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(to bottom, var(--soft-gold), var(--primary-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3));
+        }
+
+        .ampersand {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            opacity: 0.3;
+            margin: 10px 0;
+            font-weight: 100;
+        }
+
+        .celebration-msg {
+            font-weight: 100;
+            font-size: 1.1rem;
+            letter-spacing: 6px;
+            margin-top: 40px;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        /* الزر الاحترافي */
+        .master-btn {
+            background: transparent;
+            border: 1px solid var(--primary-gold);
+            color: var(--primary-gold);
+            padding: 20px 60px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            margin-top: 60px;
+            letter-spacing: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .master-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .master-btn:hover::after {
+            left: 100%;
+        }
+
+        .master-btn:active {
+            transform: scale(0.92) translateZ(50px);
+            background: var(--primary-gold);
+            color: #000;
+        }
+
+        /* هالة الماوس/اللمس */
+        .touch-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            transition: width 0.3s, height 0.3s;
+        }
+    </style>
+</head>
+<body ontouchmove="handleInteraction(event)" onmousemove="handleInteraction(event)" onclick="igniteConfetti(event)">
+
+    <div class="germany-background" id="bgContainer">
+        <img src="https://tse4.mm.bing.net/th/id/OIP.xtb0ARKZe2y097qGwJMLaAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img active" alt="">
+        <img src="https://www.theinvisibletourist.com/wp-content/uploads/2019/12/the-central-square-of-Munich-640x426.jpg" class="landmark-img" alt="">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.k6cxsa2E23wbYYK0y3WvjAHaE8?w=900&h=600&rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img" alt="">
+    </div>
+
+    <canvas id="nebula-canvas"></canvas>
+    <div id="touch-glow" class="touch-glow"></div>
+
+    <div class="hero-section">
+        <div class="signature-frame" id="mainFrame">
+            <div class="light-sweep"></div>
+            <div class="top-label">Sacred Engagement</div>
+            
+            <div class="names-container">
+                <h1 class="name-part">جين</h1>
+                <div class="ampersand">&</div>
+                <h1 class="name-part">محمد</h1>
+            </div>
+
+            <p class="celebration-msg">ألف مبروك</p>
+            
+            <button class="master-btn" id="mainBtn">Ignite Joy</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('nebula-canvas');
+        const ctx = canvas.getContext('2d');
+        const frame = document.getElementById('mainFrame');
+        const glow = document.getElementById('touch-glow');
+        const images = document.querySelectorAll('.landmark-img');
+        
+        let currentImgIndex = 0;
+        let particles = [];
+
+        // إعداد الكانفاس
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.onresize = initCanvas;
+        initCanvas();
+
+        // تدوير الخلفية الحقيقية
+        setInterval(() => {
+            images[currentImgIndex].classList.remove('active');
+            currentImgIndex = (currentImgIndex + 1) % images.length;
+            images[currentImgIndex].classList.add('active');
+        }, 8000);
+
+        function handleInteraction(e) {
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : 0);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+            
+            // تحريك الهالة
+            glow.style.left = x + 'px';
+            glow.style.top = y + 'px';
+
+            // تأثير 3D متطور للإطار
+            const rotateX = (window.innerHeight / 2 - y) / 25;
+            const rotateY = (x - window.innerWidth / 2) / 25;
+            frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
+            
+            // إنشاء جزيئات عند الحركة
+            if(Math.random() > 0.8) createSpark(x, y);
+        }
+
+        function createSpark(x, y) {
+            particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                size: Math.random() * 2,
+                life: 1
+            });
+        }
+
+        function igniteConfetti(e) {
+            const x = e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2);
+            const y = e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2);
+            
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { x: x/window.innerWidth, y: y/window.innerHeight },
+                colors: ['#d4af37', '#ffffff', '#f1e5ac'],
+                gravity: 1.2,
+                scalar: 1.2
+            });
+        }
+
+        document.getElementById('mainBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frameLoop() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#d4af37', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#d4af37', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frameLoop);
+                }
+            }());
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life -= 0.01;
+                if(p.life <= 0) particles.splice(i, 1);
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${p.life})`;
+                ctx.fill();
+            });
+
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
