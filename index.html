@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>جين ومحمد - احتفال ملكي</title>
+    <!-- مكتبة الاحتفال -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* استيراد الخطوط الفاخرة */
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=El+Messiri:wght@400;700&family=Montserrat:wght@100;300;400&display=swap');
 
         :root {
             --bg-color: #050505;
             --primary-gold: #d4af37;
             --soft-gold: #f1e5ac;
-            --glow-color: rgba(212, 175, 55, 0.4);
             --white: #ffffff;
         }
 
@@ -26,7 +27,7 @@
             margin: 0;
             padding: 0;
             background: var(--bg-color);
-            font-family: 'Montserrat', 'Cairo', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             overflow: hidden;
             display: flex;
             justify-content: center;
@@ -36,16 +37,15 @@
             touch-action: none;
         }
 
-        /* خلفية المعالم بتأثير العمق */
+        /* خلفية المعالم الألمانية - صور حقيقية مع تمويه */
         .germany-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: 0;
             pointer-events: none;
-            overflow: hidden;
         }
 
         .landmark-img {
@@ -53,24 +53,25 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: blur(15px) brightness(0.2);
-            -webkit-filter: blur(15px) brightness(0.2);
+            filter: brightness(0.25) blur(10px);
+            -webkit-filter: brightness(0.25) blur(10px);
             opacity: 0;
-            transition: opacity 3s ease;
+            transition: opacity 2.5s ease-in-out;
         }
 
         .landmark-img.active {
-            opacity: 0.25;
+            opacity: 0.35;
         }
 
-        /* محرك الجسيمات */
+        /* كانفاس الجسيمات الضوئية */
         #nebula-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
+            z-index: 1;
+            pointer-events: none;
         }
 
         .hero-section {
@@ -78,136 +79,119 @@
             z-index: 10;
             text-align: center;
             width: 90%;
-            max-width: 500px;
-            perspective: 1500px;
+            max-width: 450px;
         }
 
-        /* إطار التصميم الملكي */
+        /* الإطار المركزي - مصمم ليعمل على كافة الهواتف */
         .signature-frame {
             position: relative;
-            padding: 60px 20px;
-            background: rgba(10, 10, 10, 0.7);
-            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 60px 25px;
+            background: rgba(15, 15, 15, 0.85);
+            border: 1.5px solid rgba(212, 175, 55, 0.3);
             border-radius: 20px;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            transform-style: preserve-3d;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
+            overflow: hidden;
+            transition: transform 0.2s ease-out;
             will-change: transform;
-        }
-
-        .light-sweep {
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(212, 175, 55, 0.05), transparent 40%);
-            animation: rotateSweep 12s infinite linear;
-            pointer-events: none;
-        }
-
-        @keyframes rotateSweep {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .top-label {
             font-family: 'Cinzel', serif;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             letter-spacing: 10px;
             color: var(--primary-gold);
             margin-bottom: 30px;
             text-transform: uppercase;
+            display: block;
+            opacity: 0.9;
         }
 
         .names-container {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            margin: 15px 0;
+            gap: 12px;
+            margin: 20px 0;
         }
 
         .name-part {
             font-family: 'El Messiri', sans-serif;
-            font-size: clamp(3.5rem, 15vw, 6rem);
-            line-height: 1.1;
+            font-size: clamp(3.5rem, 15vw, 6.5rem);
+            line-height: 0.95;
             margin: 0;
             font-weight: 700;
+            color: var(--primary-gold);
+            /* تأثير التدرج الذهبي */
             background: linear-gradient(180deg, var(--soft-gold), var(--primary-gold));
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: var(--primary-gold); /* Fallback */
+        }
+
+        /* دعم الهواتف التي لا تقبل تدرج النصوص */
+        @supports not (-webkit-background-clip: text) {
+            .name-part {
+                color: var(--primary-gold);
+            }
         }
 
         .ampersand {
             font-family: 'Cinzel', serif;
             font-size: 2rem;
-            opacity: 0.3;
+            color: var(--white);
+            opacity: 0.4;
             margin: 5px 0;
+            font-weight: 200;
         }
 
         .celebration-msg {
+            font-family: 'Montserrat', sans-serif;
             font-weight: 300;
-            font-size: 1rem;
-            letter-spacing: 4px;
+            font-size: 1.1rem;
+            letter-spacing: 5px;
             margin-top: 30px;
-            opacity: 0.6;
+            color: var(--white);
+            opacity: 0.7;
             text-transform: uppercase;
         }
 
+        /* زر الاحتفال */
         .master-btn {
             background: transparent;
             border: 1px solid var(--primary-gold);
             color: var(--primary-gold);
-            padding: 15px 40px;
+            padding: 16px 45px;
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
-            margin-top: 40px;
-            letter-spacing: 5px;
+            font-size: 0.9rem;
+            margin-top: 50px;
+            letter-spacing: 6px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
         }
 
         .master-btn:active {
             background: var(--primary-gold);
             color: #000;
-            transform: scale(0.95);
+            transform: scale(0.94);
         }
 
-        .touch-glow {
-            position: fixed;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            display: none; /* يتم تفعيله عند اللمس */
-        }
-
-        @media (pointer: fine) {
-            .touch-glow { display: block; }
-        }
     </style>
 </head>
-<body ontouchmove="handleInteraction(event)" onmousemove="handleInteraction(event)" onclick="handleGlobalClick(event)">
+<body onclick="handleGlobalClick(event)" onmousemove="handleMove(event)" ontouchmove="handleMove(event)">
 
+    <!-- طبقة الخلفية: صور ألمانيا الحقيقية -->
     <div class="germany-background">
         <img src="https://tse4.mm.bing.net/th/id/OIP.xtb0ARKZe2y097qGwJMLaAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img active" alt="">
         <img src="https://www.theinvisibletourist.com/wp-content/uploads/2019/12/the-central-square-of-Munich-640x426.jpg" class="landmark-img" alt="">
         <img src="https://tse3.mm.bing.net/th/id/OIP.k6cxsa2E23wbYYK0y3WvjAHaE8?w=900&h=600&rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img" alt="">
     </div>
 
+    <!-- كانفاس التأثيرات الضوئية -->
     <canvas id="nebula-canvas"></canvas>
-    <div id="touch-glow" class="touch-glow"></div>
 
+    <!-- المحتوى الرئيسي -->
     <div class="hero-section">
         <div class="signature-frame" id="mainFrame">
-            <div class="light-sweep"></div>
-            <div class="top-label">Sacred Union</div>
+            <span class="top-label">Sacred Union</span>
             
             <div class="names-container">
                 <h1 class="name-part">جين</h1>
@@ -225,95 +209,82 @@
         const canvas = document.getElementById('nebula-canvas');
         const ctx = canvas.getContext('2d');
         const frame = document.getElementById('mainFrame');
-        const glow = document.getElementById('touch-glow');
         const images = document.querySelectorAll('.landmark-img');
-        
         let currentImgIndex = 0;
-        let particles = [];
+        let stars = [];
 
+        // ضبط أبعاد الكانفاس
         function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
+            stars = [];
+            for(let i=0; i<60; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 2,
+                    v: Math.random() * 0.4 + 0.1
+                });
+            }
         }
         window.addEventListener('resize', initCanvas);
         initCanvas();
 
-        // تدوير الصور في الخلفية
+        // تدوير صور الخلفية كل 7 ثوانٍ
         setInterval(() => {
             images[currentImgIndex].classList.remove('active');
             currentImgIndex = (currentImgIndex + 1) % images.length;
             images[currentImgIndex].classList.add('active');
-        }, 6000);
+        }, 7000);
 
-        function handleInteraction(e) {
-            const clientX = e.clientX || (e.touches ? e.touches[0].clientX : 0);
-            const clientY = e.clientY || (e.touches ? e.touches[0].clientY : 0);
+        // التعامل مع التفاعل (تحريك الماوس أو اللمس)
+        function handleMove(e) {
+            const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0));
+            const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0));
             
-            if (glow) {
-                glow.style.left = clientX + 'px';
-                glow.style.top = clientY + 'px';
-            }
-
-            // حركة 3D خفيفة جداً لتناسب أداء الهواتف
-            const rotateX = (window.innerHeight / 2 - clientY) / 40;
-            const rotateY = (clientX - window.innerWidth / 2) / 40;
+            // تأثير ميلان بسيط للإطار
+            const rotateX = (window.innerHeight / 2 - y) / 50;
+            const rotateY = (x - window.innerWidth / 2) / 50;
             frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            
-            if(Math.random() > 0.9) createSpark(clientX, clientY);
         }
 
-        function createSpark(x, y) {
-            if (particles.length > 30) particles.shift(); // تقليل عدد الجسيمات للجوال
-            particles.push({
-                x, y,
-                vx: (Math.random() - 0.5) * 3,
-                vy: (Math.random() - 0.5) * 3,
-                size: Math.random() * 2,
-                life: 1
-            });
-        }
-
+        // تأثير النقر في أي مكان
         function handleGlobalClick(e) {
-            const x = e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2);
-            const y = e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2);
+            const x = (e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2)) / window.innerWidth;
+            const y = (e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2)) / window.innerHeight;
             
             confetti({
-                particleCount: 30,
-                spread: 50,
-                origin: { x: x/window.innerWidth, y: y/window.innerHeight },
-                colors: ['#d4af37', '#ffffff']
+                particleCount: 35,
+                spread: 60,
+                origin: { x, y },
+                colors: ['#d4af37', '#ffffff'],
+                scale: 0.8
             });
         }
 
+        // زر الاحتفال الكبير
         document.getElementById('mainBtn').addEventListener('click', (e) => {
             e.stopPropagation();
             confetti({
-                particleCount: 150,
-                spread: 100,
+                particleCount: 200,
+                spread: 120,
                 origin: { y: 0.6 },
-                colors: ['#d4af37', '#ffffff']
+                colors: ['#d4af37', '#ffffff', '#ffd700']
             });
         });
 
+        // حركة النجوم في الخلفية
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(212, 175, 55, 0.4)";
             
-            for (let i = particles.length - 1; i >= 0; i--) {
-                let p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.life -= 0.02;
-                
-                if (p.life <= 0) {
-                    particles.splice(i, 1);
-                    continue;
-                }
-                
+            stars.forEach(s => {
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(212, 175, 55, ${p.life})`;
+                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
                 ctx.fill();
-            }
+                s.y -= s.v;
+                if(s.y < 0) s.y = canvas.height;
+            });
             requestAnimationFrame(animate);
         }
         animate();
