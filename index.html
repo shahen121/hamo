@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>جين ومحمد - احتفال ملكي</title>
+    <title>دعوة خطوبة - جين ومحمد</title>
     <!-- مكتبة الاحتفال -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -15,6 +15,7 @@
             --primary-gold: #d4af37;
             --soft-gold: #f1e5ac;
             --white: #ffffff;
+            --transition-smooth: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -28,16 +29,13 @@
             padding: 0;
             background: var(--bg-color);
             font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
             color: var(--white);
-            touch-action: none;
+            scroll-behavior: smooth; /* انتقال سلس عند النقر على الروابط */
         }
 
-        /* خلفية المعالم الألمانية - صور حقيقية مع تمويه */
+        /* خلفية المعالم الألمانية */
         .germany-background {
             position: fixed;
             top: 0;
@@ -53,17 +51,16 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.25) blur(10px);
-            -webkit-filter: brightness(0.25) blur(10px);
+            filter: brightness(0.2) blur(8px);
+            -webkit-filter: brightness(0.2) blur(8px);
             opacity: 0;
-            transition: opacity 2.5s ease-in-out;
+            transition: opacity 3s ease-in-out;
         }
 
         .landmark-img.active {
             opacity: 0.35;
         }
 
-        /* كانفاس الجسيمات الضوئية */
         #nebula-canvas {
             position: fixed;
             top: 0;
@@ -74,25 +71,47 @@
             pointer-events: none;
         }
 
-        .hero-section {
+        /* الأقسام الرئيسية */
+        section {
             position: relative;
             z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
             text-align: center;
-            width: 90%;
-            max-width: 450px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition-smooth);
         }
 
-        /* الإطار المركزي - مصمم ليعمل على كافة الهواتف */
+        /* فئة لإظهار القسم عند التمرير */
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* تأثيرات الإطار */
         .signature-frame {
             position: relative;
             padding: 60px 25px;
-            background: rgba(15, 15, 15, 0.85);
-            border: 1.5px solid rgba(212, 175, 55, 0.3);
+            background: rgba(15, 15, 15, 0.92);
+            border: 1px solid rgba(212, 175, 55, 0.3);
             border-radius: 20px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-            overflow: hidden;
-            transition: transform 0.2s ease-out;
-            will-change: transform;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .invitation-text {
+            font-family: 'El Messiri', sans-serif;
+            font-size: 1.4rem;
+            color: var(--soft-gold);
+            line-height: 1.8;
+            margin-bottom: 30px;
         }
 
         .top-label {
@@ -100,120 +119,218 @@
             font-size: 0.75rem;
             letter-spacing: 10px;
             color: var(--primary-gold);
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-transform: uppercase;
             display: block;
-            opacity: 0.9;
         }
 
         .names-container {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             margin: 20px 0;
         }
 
         .name-part {
             font-family: 'El Messiri', sans-serif;
-            font-size: clamp(3.5rem, 15vw, 6.5rem);
-            line-height: 0.95;
+            font-size: clamp(3rem, 12vw, 5.5rem);
+            line-height: 1.1;
             margin: 0;
             font-weight: 700;
-            color: var(--primary-gold);
-            /* تأثير التدرج الذهبي */
             background: linear-gradient(180deg, var(--soft-gold), var(--primary-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            transition: transform 0.5s ease;
         }
 
-        /* دعم الهواتف التي لا تقبل تدرج النصوص */
-        @supports not (-webkit-background-clip: text) {
-            .name-part {
-                color: var(--primary-gold);
-            }
+        .name-part:hover {
+            transform: scale(1.05);
         }
 
         .ampersand {
             font-family: 'Cinzel', serif;
-            font-size: 2rem;
-            color: var(--white);
-            opacity: 0.4;
-            margin: 5px 0;
-            font-weight: 200;
+            font-size: 1.8rem;
+            opacity: 0.5;
         }
 
-        .celebration-msg {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 300;
-            font-size: 1.1rem;
-            letter-spacing: 5px;
-            margin-top: 30px;
-            color: var(--white);
-            opacity: 0.7;
-            text-transform: uppercase;
+        .location-section {
+            background: linear-gradient(to bottom, transparent, rgba(10, 10, 10, 0.95));
         }
 
-        /* زر الاحتفال */
+        .location-card {
+            background: rgba(212, 175, 55, 0.03);
+            border: 1px dashed rgba(212, 175, 55, 0.4);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            transition: var(--transition-smooth);
+        }
+
+        .location-card:hover {
+            border-color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.07);
+        }
+
+        .location-title {
+            font-family: 'Cinzel', serif;
+            color: var(--primary-gold);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--primary-gold);
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-12px) translateX(-50%);}
+            60% {transform: translateY(-6px) translateX(-50%);}
+        }
+
         .master-btn {
             background: transparent;
             border: 1px solid var(--primary-gold);
             color: var(--primary-gold);
-            padding: 16px 45px;
+            padding: 14px 40px;
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
-            margin-top: 50px;
-            letter-spacing: 6px;
+            font-size: 0.85rem;
+            margin-top: 30px;
+            letter-spacing: 4px;
             cursor: pointer;
-            transition: all 0.4s ease;
-            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .master-btn:active {
+        .master-btn:hover {
             background: var(--primary-gold);
             color: #000;
-            transform: scale(0.94);
+            transform: scale(1.05);
         }
 
+        /* زر العودة الصغير */
+        .back-to-top {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 25px;
+            padding: 10px 20px;
+            font-size: 0.75rem;
+            color: var(--soft-gold);
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            font-family: 'Cinzel', serif;
+        }
+
+        .back-to-top:hover {
+            background: var(--primary-gold);
+            color: #000;
+            border-color: var(--primary-gold);
+        }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--soft-gold);
+            text-decoration: none;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--primary-gold);
+            padding-bottom: 5px;
+            transition: opacity 0.3s ease;
+        }
+
+        .map-link:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
-<body onclick="handleGlobalClick(event)" onmousemove="handleMove(event)" ontouchmove="handleMove(event)">
+<body>
 
-    <!-- طبقة الخلفية: صور ألمانيا الحقيقية -->
     <div class="germany-background">
-        <img src="https://tse4.mm.bing.net/th/id/OIP.xtb0ARKZe2y097qGwJMLaAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img active" alt="">
-        <img src="https://www.theinvisibletourist.com/wp-content/uploads/2019/12/the-central-square-of-Munich-640x426.jpg" class="landmark-img" alt="">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.k6cxsa2E23wbYYK0y3WvjAHaE8?w=900&h=600&rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img" alt="">
+        <img src="https://tse4.mm.bing.net/th/id/OIP.xtb0ARKZe2y097qGwJMLaAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img active" alt="[صورة معلم ألماني 1]">
+        <img src="https://www.theinvisibletourist.com/wp-content/uploads/2019/12/the-central-square-of-Munich-640x426.jpg" class="landmark-img" alt="[صورة ساحة في ميونخ]">
+        <img src="https://tse3.mm.bing.net/th/id/OIP.k6cxsa2E23wbYYK0y3WvjAHaE8?w=900&h=600&rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img" alt="[صورة معلم ألماني 3]">
     </div>
 
-    <!-- كانفاس التأثيرات الضوئية -->
     <canvas id="nebula-canvas"></canvas>
 
-    <!-- المحتوى الرئيسي -->
-    <div class="hero-section">
-        <div class="signature-frame" id="mainFrame">
-            <span class="top-label">Sacred Union</span>
-            
+    <!-- القسم الأول: الدعوة الرسمية -->
+    <section id="invite">
+        <div class="signature-frame">
+            <span class="top-label">Official Invitation</span>
+            <div class="invitation-text">
+                يتشرف عائلتا الطرفين بدعوتكم <br>
+                لمشاركتنا فرحة العمر في حفلة <br>
+                خطوبة أبنائنا المنتظرة
+            </div>
+            <div class="scroll-indicator" onclick="scrollToId('announcement')">
+                <span>اسحب لرؤية العرسان</span><br>
+                ▼
+            </div>
+        </div>
+    </section>
+
+    <!-- القسم الثاني: الإعلان عن العرسان -->
+    <section id="announcement">
+        <div class="signature-frame">
+            <span class="top-label">Engagement of</span>
             <div class="names-container">
                 <h1 class="name-part">جين</h1>
                 <div class="ampersand">&</div>
                 <h1 class="name-part">محمد</h1>
             </div>
-
-            <p class="celebration-msg">ألف مبروك</p>
-            
-            <button class="master-btn" id="mainBtn">Celebrate</button>
+            <p style="opacity: 0.8; font-size: 1.1rem; margin-top: 20px;">ننتظركم بكل حب لتكتمل فرحتنا</p>
+            <button class="master-btn" onclick="celebrate()">احتفل معنا</button>
         </div>
-    </div>
+        <div class="scroll-indicator" onclick="scrollToId('location')">
+            <span>الموقع</span><br>
+            ▼
+        </div>
+    </section>
+
+    <!-- القسم الثالث: الموقع -->
+    <section id="location" class="location-section">
+        <div class="signature-frame">
+            <span class="top-label">The Venue</span>
+            <div class="location-card">
+                <span class="location-title">تفاصيل الحفل</span>
+                <p>قاعة الاحتفالات الكبرى</p>
+                <p>التاريخ: سيتم التحديد قريباً</p>
+                <hr style="border: 0; border-top: 1px solid rgba(212,175,55,0.2); margin: 20px 0;">
+                <p>الموقع: ألمانيا - هانوفر</p>
+                <a href="#" class="map-link">📍 فتح الموقع على الخريطة</a>
+            </div>
+            
+            <p style="margin-top: 25px; font-size: 0.8rem; opacity: 0.6;">* سنوافيكم بالموقع الدقيق لاحقاً *</p>
+            
+            <!-- زر العودة الصغير -->
+            <div class="back-to-top" onclick="scrollToId('invite')">
+                العودة للبداية ↑
+            </div>
+        </div>
+    </section>
 
     <script>
         const canvas = document.getElementById('nebula-canvas');
         const ctx = canvas.getContext('2d');
-        const frame = document.getElementById('mainFrame');
         const images = document.querySelectorAll('.landmark-img');
+        const sections = document.querySelectorAll('section');
         let currentImgIndex = 0;
         let stars = [];
 
-        // ضبط أبعاد الكانفاس
         function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -222,62 +339,54 @@
                 stars.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    size: Math.random() * 2,
+                    size: Math.random() * 1.5,
                     v: Math.random() * 0.4 + 0.1
                 });
             }
         }
+
+        // تحسين التنقل السلس برمجياً
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // مراقب التمرير لإظهار الأقسام بسلاسة
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => sectionObserver.observe(section));
+
         window.addEventListener('resize', initCanvas);
         initCanvas();
 
-        // تدوير صور الخلفية كل 7 ثوانٍ
+        // تدوير الخلفية
         setInterval(() => {
             images[currentImgIndex].classList.remove('active');
             currentImgIndex = (currentImgIndex + 1) % images.length;
             images[currentImgIndex].classList.add('active');
-        }, 7000);
+        }, 6500);
 
-        // التعامل مع التفاعل (تحريك الماوس أو اللمس)
-        function handleMove(e) {
-            const x = (e.clientX || (e.touches ? e.touches[0].clientX : 0));
-            const y = (e.clientY || (e.touches ? e.touches[0].clientY : 0));
-            
-            // تأثير ميلان بسيط للإطار
-            const rotateX = (window.innerHeight / 2 - y) / 50;
-            const rotateY = (x - window.innerWidth / 2) / 50;
-            frame.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        }
-
-        // تأثير النقر في أي مكان
-        function handleGlobalClick(e) {
-            const x = (e.clientX || (e.touches ? e.touches[0].clientX : window.innerWidth/2)) / window.innerWidth;
-            const y = (e.clientY || (e.touches ? e.touches[0].clientY : window.innerHeight/2)) / window.innerHeight;
-            
+        function celebrate() {
             confetti({
-                particleCount: 35,
-                spread: 60,
-                origin: { x, y },
-                colors: ['#d4af37', '#ffffff'],
-                scale: 0.8
-            });
-        }
-
-        // زر الاحتفال الكبير
-        document.getElementById('mainBtn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            confetti({
-                particleCount: 200,
-                spread: 120,
+                particleCount: 150,
+                spread: 80,
                 origin: { y: 0.6 },
-                colors: ['#d4af37', '#ffffff', '#ffd700']
+                colors: ['#d4af37', '#ffffff', '#f1e5ac']
             });
-        });
+        }
 
-        // حركة النجوم في الخلفية
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "rgba(212, 175, 55, 0.4)";
-            
             stars.forEach(s => {
                 ctx.beginPath();
                 ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
