@@ -1,0 +1,499 @@
+/* =========================================================
+   Tokens
+   ========================================================= */
+:root {
+  --cream:        #F6F2E8;
+  --cream-deep:    #EDE6D4;
+  --ink:          #22301F;
+  --deep-green:   #2F4A3C;
+  --deep-green-2: #24392E;
+  --sage:         #8FA890;
+  --sage-light:   #C7D6C4;
+  --gold:         #C9A05C;
+  --gold-light:   #E4C989;
+  --white:        #FFFFFF;
+
+  --font-display: 'Amiri', 'Georgia', serif;
+  --font-body:    'Tajawal', 'Segoe UI', sans-serif;
+
+  --radius-lg: 22px;
+  --radius-md: 14px;
+  --radius-sm: 9px;
+
+  --shadow-soft: 0 12px 32px -12px rgba(34, 48, 31, 0.22);
+  --shadow-tight: 0 4px 14px -6px rgba(34, 48, 31, 0.28);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 12% 0%, var(--sage-light) 0%, transparent 45%),
+    radial-gradient(circle at 100% 20%, var(--gold-light) 0%, transparent 38%),
+    var(--cream);
+}
+
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 28px 20px 40px;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .page { max-width: 520px; padding-top: 40px; }
+}
+
+h1, h2 { font-family: var(--font-display); margin: 0; }
+p { margin: 0; }
+
+/* =========================================================
+   Water ripple overlay (signature reveal effect)
+   ========================================================= */
+.water-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  opacity: 0;
+}
+
+.water-overlay.rippling {
+  animation: water-fade 1.4s ease-out forwards;
+}
+
+.water-overlay.rippling::before,
+.water-overlay.rippling::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--sage);
+  transform: translate(-50%, -50%);
+  animation: ripple-expand 1.4s cubic-bezier(0.2, 0.6, 0.3, 1) forwards;
+}
+
+.water-overlay.rippling::after {
+  border-color: var(--gold);
+  animation-delay: 0.18s;
+}
+
+@keyframes ripple-expand {
+  from { width: 40px; height: 40px; opacity: 0.9; }
+  to   { width: 1400px; height: 1400px; opacity: 0; }
+}
+
+@keyframes water-fade {
+  0%   { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 34px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--deep-green);
+}
+
+.brand-mark { width: 26px; height: 26px; }
+
+.brand-word {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.28rem;
+  letter-spacing: 0.5px;
+}
+
+.brand-tag {
+  font-size: 0.68rem;
+  color: var(--deep-green);
+  opacity: 0.65;
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Hero
+   ========================================================= */
+.hero { text-align: center; margin-bottom: 30px; }
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--deep-green);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+}
+
+.trophy-icon { width: 14px; height: 14px; color: var(--gold-light); }
+
+.hero-title {
+  font-size: 2rem;
+  line-height: 1.35;
+  color: var(--deep-green);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.hero-sub {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--ink);
+  opacity: 0.78;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+.restaurant-name-slot {
+  color: var(--gold);
+  font-weight: 700;
+  opacity: 1;
+}
+
+/* =========================================================
+   Steps
+   ========================================================= */
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 30px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 64px;
+}
+
+.step-num {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.step-label {
+  font-size: 0.65rem;
+  color: var(--deep-green);
+  text-align: center;
+  opacity: 0.75;
+}
+
+.step-line {
+  flex: 1;
+  max-width: 30px;
+  height: 1px;
+  background: var(--sage);
+  opacity: 0.6;
+  margin-top: -14px;
+}
+
+.step.is-active .step-num { color: var(--deep-green); }
+.step.is-active .step-label { opacity: 1; font-weight: 700; }
+
+/* =========================================================
+   Gift showcase + lock veil
+   ========================================================= */
+.gift-section {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 26px;
+}
+
+.gift-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 18px;
+  background: var(--white);
+  filter: blur(7px) saturate(0.7);
+  transform: scale(1.02);
+  transition: filter 0.9s ease, transform 0.9s ease;
+}
+
+.gift-section.is-unlocked .gift-grid {
+  filter: blur(0) saturate(1);
+  transform: scale(1);
+}
+
+.gift-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.gift-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(160deg, var(--sage-light), var(--white) 70%);
+  position: relative;
+  overflow: hidden;
+}
+
+.gift-image::before {
+  /* simple abstract bottle/jar silhouette, brand-neutral placeholder */
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: 46%;
+  height: 60%;
+  transform: translateX(-50%);
+  background: var(--deep-green);
+  opacity: 0.14;
+  border-radius: 10px 10px 4px 4px;
+}
+
+.gift-image::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 66%;
+  width: 20%;
+  height: 14%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  opacity: 0.35;
+  border-radius: 3px 3px 0 0;
+}
+
+.gift-image.ph-2::before { border-radius: 50% 50% 30% 30%; }
+.gift-image.ph-3::before { border-radius: 4px; height: 46%; bottom: 8%; }
+
+.gift-name {
+  font-size: 0.66rem;
+  text-align: center;
+  color: var(--deep-green);
+  opacity: 0.8;
+  line-height: 1.3;
+}
+
+.lock-veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(47, 74, 60, 0.4);
+  backdrop-filter: blur(1px);
+  transition: opacity 0.6s ease, visibility 0.6s;
+}
+
+.gift-section.is-unlocked .lock-veil {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lock-icon { width: 30px; height: 30px; color: var(--white); }
+
+.lock-text {
+  color: var(--white);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.ig-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--white);
+  color: var(--deep-green);
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 12px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  box-shadow: var(--shadow-tight);
+  transition: transform 0.15s ease;
+}
+
+.ig-btn:active { transform: scale(0.96); }
+.ig-btn svg { width: 18px; height: 18px; }
+
+.manual-unlock {
+  background: none;
+  border: none;
+  color: var(--cream);
+  opacity: 0.75;
+  font-size: 0.72rem;
+  text-decoration: underline;
+  font-family: var(--font-body);
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* =========================================================
+   Order section
+   ========================================================= */
+.order-section { margin-bottom: 20px; }
+
+.order-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 28px 22px;
+  box-shadow: var(--shadow-soft);
+  text-align: center;
+}
+
+.order-title {
+  font-size: 1.5rem;
+  color: var(--deep-green);
+  margin-bottom: 8px;
+}
+
+.order-sub {
+  display: block;
+  font-size: 0.85rem;
+  opacity: 0.75;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.field-label {
+  display: block;
+  text-align: right;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--deep-green);
+  margin-bottom: 8px;
+}
+
+.table-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--sage-light);
+  background: var(--cream);
+  font-family: var(--font-body);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--deep-green);
+  text-align: center;
+  outline-offset: 2px;
+}
+
+.table-input:focus-visible {
+  outline: 2px solid var(--gold);
+  border-color: var(--gold);
+}
+
+.field-error {
+  color: #B4402A;
+  font-size: 0.76rem;
+  margin-top: 8px;
+  text-align: right;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 18px;
+  padding: 15px;
+  border: none;
+  border-radius: 999px;
+  background: var(--deep-green);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.submit-btn:active { transform: scale(0.98); }
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.submit-btn.is-loading .submit-label::after {
+  content: "…";
+}
+
+.success-state, .error-state {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.success-state svg { width: 40px; height: 40px; color: var(--deep-green); }
+.success-state p { font-weight: 700; color: var(--deep-green); }
+
+.error-state p { font-size: 0.85rem; color: #B4402A; }
+
+.retry-btn {
+  background: none;
+  border: 1.5px solid var(--deep-green);
+  color: var(--deep-green);
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.site-footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--deep-green);
+  opacity: 0.55;
+}
+
+/* =========================================================
+   Reduced motion
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .gift-grid, .lock-veil, .water-overlay,
+  .water-overlay.rippling::before, .water-overlay.rippling::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

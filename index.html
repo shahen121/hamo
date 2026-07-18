@@ -1,402 +1,169 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>دعوة خطوبة - جين ومحمد</title>
-    <!-- مكتبة الاحتفال -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        /* استيراد الخطوط الفاخرة */
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=El+Messiri:wght@400;700&family=Montserrat:wght@100;300;400&display=swap');
-
-        :root {
-            --bg-color: #050505;
-            --primary-gold: #d4af37;
-            --soft-gold: #f1e5ac;
-            --white: #ffffff;
-            --transition-smooth: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background: var(--bg-color);
-            font-family: 'Montserrat', sans-serif;
-            overflow-x: hidden;
-            overflow-y: auto;
-            color: var(--white);
-            scroll-behavior: smooth; /* انتقال سلس عند النقر على الروابط */
-        }
-
-        /* خلفية المعالم الألمانية */
-        .germany-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .landmark-img {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.2) blur(8px);
-            -webkit-filter: brightness(0.2) blur(8px);
-            opacity: 0;
-            transition: opacity 3s ease-in-out;
-        }
-
-        .landmark-img.active {
-            opacity: 0.35;
-        }
-
-        #nebula-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* الأقسام الرئيسية */
-        section {
-            position: relative;
-            z-index: 10;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: var(--transition-smooth);
-        }
-
-        /* فئة لإظهار القسم عند التمرير */
-        section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* تأثيرات الإطار */
-        .signature-frame {
-            position: relative;
-            padding: 60px 25px;
-            background: rgba(15, 15, 15, 0.92);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 20px;
-            box-shadow: 0 30px 70px rgba(0,0,0,0.9);
-            width: 100%;
-            max-width: 500px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .invitation-text {
-            font-family: 'El Messiri', sans-serif;
-            font-size: 1.4rem;
-            color: var(--soft-gold);
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-
-        .top-label {
-            font-family: 'Cinzel', serif;
-            font-size: 0.75rem;
-            letter-spacing: 10px;
-            color: var(--primary-gold);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            display: block;
-        }
-
-        .names-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .name-part {
-            font-family: 'El Messiri', sans-serif;
-            font-size: clamp(3rem, 12vw, 5.5rem);
-            line-height: 1.1;
-            margin: 0;
-            font-weight: 700;
-            background: linear-gradient(180deg, var(--soft-gold), var(--primary-gold));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            transition: transform 0.5s ease;
-        }
-
-        .name-part:hover {
-            transform: scale(1.05);
-        }
-
-        .ampersand {
-            font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
-            opacity: 0.5;
-        }
-
-        .location-section {
-            background: linear-gradient(to bottom, transparent, rgba(10, 10, 10, 0.95));
-        }
-
-        .location-card {
-            background: rgba(212, 175, 55, 0.03);
-            border: 1px dashed rgba(212, 175, 55, 0.4);
-            padding: 30px;
-            border-radius: 15px;
-            margin-top: 40px;
-            transition: var(--transition-smooth);
-        }
-
-        .location-card:hover {
-            border-color: var(--primary-gold);
-            background: rgba(212, 175, 55, 0.07);
-        }
-
-        .location-title {
-            font-family: 'Cinzel', serif;
-            color: var(--primary-gold);
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            animation: bounce 2s infinite;
-            color: var(--primary-gold);
-            cursor: pointer;
-            transition: opacity 0.3s ease;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
-            40% {transform: translateY(-12px) translateX(-50%);}
-            60% {transform: translateY(-6px) translateX(-50%);}
-        }
-
-        .master-btn {
-            background: transparent;
-            border: 1px solid var(--primary-gold);
-            color: var(--primary-gold);
-            padding: 14px 40px;
-            font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
-            margin-top: 30px;
-            letter-spacing: 4px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .master-btn:hover {
-            background: var(--primary-gold);
-            color: #000;
-            transform: scale(1.05);
-        }
-
-        /* زر العودة الصغير */
-        .back-to-top {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 25px;
-            padding: 10px 20px;
-            font-size: 0.75rem;
-            color: var(--soft-gold);
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 30px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: var(--transition-smooth);
-            font-family: 'Cinzel', serif;
-        }
-
-        .back-to-top:hover {
-            background: var(--primary-gold);
-            color: #000;
-            border-color: var(--primary-gold);
-        }
-
-        .map-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--soft-gold);
-            text-decoration: none;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--primary-gold);
-            padding-bottom: 5px;
-            transition: opacity 0.3s ease;
-        }
-
-        .map-link:hover {
-            opacity: 0.7;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>هديتك من جامارد | ليلة النهائي</title>
+<meta name="description" content="تابعنا على انستقرام واحصل على هديتك من جامارد بمناسبة نهائي مونديال 26">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;700;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="germany-background">
-        <img src="https://tse4.mm.bing.net/th/id/OIP.xtb0ARKZe2y097qGwJMLaAHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img active" alt="[صورة معلم ألماني 1]">
-        <img src="https://www.theinvisibletourist.com/wp-content/uploads/2019/12/the-central-square-of-Munich-640x426.jpg" class="landmark-img" alt="[صورة ساحة في ميونخ]">
-        <img src="https://tse3.mm.bing.net/th/id/OIP.k6cxsa2E23wbYYK0y3WvjAHaE8?w=900&h=600&rs=1&pid=ImgDetMain&o=7&rm=3" class="landmark-img" alt="[صورة معلم ألماني 3]">
+<div id="langSelector" class="lang-screen">
+  <div class="lang-card">
+    <div class="lang-logo">
+      <img src="logo.png" alt="Gamarde Logo" style="max-height: 50px; width: auto; filter: drop-shadow(0 0 5px rgba(0,0,0,0.1));">
     </div>
+    <h2 class="lang-title">Choose Language<br>اختر اللغة<br>زمان هەڵبژێرە</h2>
+    <div class="lang-buttons">
+      <button class="lang-btn" data-lang="ar">العربية 🇮🇶</button>
+      <button class="lang-btn" data-lang="ku">کوردی ☀️</button>
+      <button class="lang-btn" data-lang="en">English 🇬🇧</button>
+    </div>
+  </div>
+</div>
 
-    <canvas id="nebula-canvas"></canvas>
+<div id="app" style="display: none;">
+  <div class="water-overlay" id="waterOverlay" aria-hidden="true"></div>
 
-    <!-- القسم الأول: الدعوة الرسمية -->
-    <section id="invite">
-        <div class="signature-frame">
-            <span class="top-label">Official Invitation</span>
-            <div class="invitation-text">
-                يتشرف عائلتا الطرفين بدعوتكم <br>
-                لمشاركتنا فرحة العمر في حفلة <br>
-                خطوبة أبنائنا المنتظرة
-            </div>
-            <div class="scroll-indicator" onclick="scrollToId('announcement')">
-                <span>اسحب لرؤية العرسان</span><br>
-                ▼
-            </div>
-        </div>
+  <main class="page">
+    <!-- ===== Header ===== -->
+    <header class="site-header">
+      <div class="brand" style="display: flex; justify-content: center; width: 100%;">
+        <img src="logo.png" alt="Gamarde Logo" style="max-height: 60px; width: auto; filter: drop-shadow(0 0 5px rgba(0,0,0,0.1));">
+      </div>
+    </header>
+
+    <!-- ===== Hero ===== -->
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <svg class="trophy-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 4H17V9C17 12.3137 14.7614 15 12 15C9.23858 15 7 12.3137 7 9V4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M7 5H4V7C4 9 5.5 10.5 7 10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M17 5H20V7C20 9 18.5 10.5 17 10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M12 15V19" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M8.5 21H15.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <path d="M10 19H14V19.5C14 20.3284 13.3284 21 12.5 21H11.5C10.6716 21 10 20.3284 10 19.5V19Z" stroke="currentColor" stroke-width="1.4"/>
+        </svg>
+        <span data-i18n="heroEyebrow">هدية ليلة النهائي</span>
+      </div>
+      <h1 class="hero-title" data-i18n="heroTitle">هدية من جامارد<br>بمناسبة نهائي كأس العالم</h1>
+      <p class="hero-sub" data-i18n="heroSub">تابعنا على إنستقرام وافتح صندوق هديتك الطبيعية من جامارد — مقدمة لكم الليلة من <span class="restaurant-name-slot">Gamarde IQ</span></p>
     </section>
 
-    <!-- القسم الثاني: الإعلان عن العرسان -->
-    <section id="announcement">
-        <div class="signature-frame">
-            <span class="top-label">Engagement of</span>
-            <div class="names-container">
-                <h1 class="name-part">جين</h1>
-                <div class="ampersand">&</div>
-                <h1 class="name-part">محمد</h1>
-            </div>
-            <p style="opacity: 0.8; font-size: 1.1rem; margin-top: 20px;">ننتظركم بكل حب لتكتمل فرحتنا</p>
-            <button class="master-btn" onclick="celebrate()">احتفل معنا</button>
-        </div>
-        <div class="scroll-indicator" onclick="scrollToId('location')">
-            <span>الموقع</span><br>
-            ▼
-        </div>
+    <!-- ===== Steps ===== -->
+    <section class="steps" aria-label="Steps">
+      <div class="step" data-step="1">
+        <span class="step-num">01</span>
+        <span class="step-label" data-i18n="step1">شاهد الهدية</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="2">
+        <span class="step-num">02</span>
+        <span class="step-label" data-i18n="step2">تابعنا بانستقرام</span>
+      </div>
+      <div class="step-line"></div>
+      <div class="step" data-step="3">
+        <span class="step-num">03</span>
+        <span class="step-label" data-i18n="step3">اكتب رقم طاولتك</span>
+      </div>
     </section>
 
-    <!-- القسم الثالث: الموقع -->
-    <section id="location" class="location-section">
-        <div class="signature-frame">
-            <span class="top-label">The Venue</span>
-            <div class="location-card">
-                <span class="location-title">تفاصيل الحفل</span>
-                <p>قاعة الاحتفالات الكبرى</p>
-                <p>التاريخ: سيتم التحديد قريباً</p>
-                <hr style="border: 0; border-top: 1px solid rgba(212,175,55,0.2); margin: 20px 0;">
-                <p>الموقع: ألمانيا - هانوفر</p>
-                <a href="#" class="map-link">📍 فتح الموقع على الخريطة</a>
-            </div>
-            
-            <p style="margin-top: 25px; font-size: 0.8rem; opacity: 0.6;">* سنوافيكم بالموقع الدقيق لاحقاً *</p>
-            
-            <!-- زر العودة الصغير -->
-            <div class="back-to-top" onclick="scrollToId('invite')">
-                العودة للبداية ↑
-            </div>
+    <!-- ===== Gift showcase (locked) ===== -->
+    <section class="gift-section" id="giftSection">
+      <h3 class="selection-title" data-i18n="selectionTitle">اختر نوع بشرتك <span style="color:#ff4d4f">*</span></h3>
+      <div class="gift-grid" id="giftGrid">
+        <div class="gift-card skin-type-card" data-type="oily">
+          <img src="oily skin.jpg" alt="Oily Skin" class="gift-image">
+          <span class="gift-name" data-i18n="skinOily">بشرة دهنية</span>
         </div>
+        <div class="gift-card skin-type-card" data-type="dry">
+          <img src="dry skin.jpg" alt="Dry Skin" class="gift-image">
+          <span class="gift-name" data-i18n="skinDry">بشرة جافة</span>
+        </div>
+        <div class="gift-card skin-type-card" data-type="normal">
+          <img src="normal skin.jpg" alt="Normal Skin" class="gift-image">
+          <span class="gift-name" data-i18n="skinNormal">بشرة عادية</span>
+        </div>
+      </div>
+
+      <div class="lock-veil" id="lockVeil">
+        <svg class="lock-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="12" cy="15" r="1.4" fill="currentColor"/>
+        </svg>
+        <p class="lock-text" data-i18n="lockText">هديتك بانتظارك، مقفلة الآن</p>
+
+        <a class="ig-btn" id="igFollowBtn" href="https://instagram.com/gamarde_iq" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="17.2" cy="6.8" r="1" fill="currentColor"/>
+          </svg>
+          <span data-i18n="igBtnText">تابعنا على انستقرام</span>
+        </a>
+
+        <button class="manual-unlock" id="manualUnlock" type="button" data-i18n="manualBtn">رجعت توي؟ افتح الهدية يدوياً</button>
+      </div>
     </section>
 
-    <script>
-        const canvas = document.getElementById('nebula-canvas');
-        const ctx = canvas.getContext('2d');
-        const images = document.querySelectorAll('.landmark-img');
-        const sections = document.querySelectorAll('section');
-        let currentImgIndex = 0;
-        let stars = [];
+    <!-- ===== Order form (revealed) ===== -->
+    <section class="order-section" id="orderSection" hidden>
+      <div class="order-card">
+        <h2 class="order-title" data-i18n="orderTitle">هديتك انفتحت 🎉</h2>
+        <p class="order-sub" data-i18n="orderSub">اكتب رقم طاولتك وضغطة وحدة، وفريق <span class="restaurant-name-slot">Gamarde IQ</span> رح يوصلها إلك</p>
 
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            stars = [];
-            for(let i=0; i<60; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 1.5,
-                    v: Math.random() * 0.4 + 0.1
-                });
-            }
-        }
+        <form id="orderForm" novalidate>
+          <label class="field-label" for="tableNumber" data-i18n="labelTable">رقم الطاولة</label>
+          <input
+            class="table-input"
+            type="number"
+            id="tableNumber"
+            name="tableNumber"
+            inputmode="numeric"
+            min="1"
+            placeholder="12"
+            required
+          >
+          <p class="field-error" id="fieldError" hidden data-i18n="errorTable">فضلاً اكتب رقم طاولة صحيح</p>
 
-        // تحسين التنقل السلس برمجياً
-        function scrollToId(id) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-        }
+          <button class="submit-btn" type="submit" id="submitBtn">
+            <span class="submit-label" data-i18n="submitBtn">إرسال الطلب</span>
+          </button>
+        </form>
 
-        // مراقب التمرير لإظهار الأقسام بسلاسة
-        const observerOptions = {
-            threshold: 0.2
-        };
+        <div class="success-state" id="successState" hidden>
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 12.5L10.5 15L16 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p data-i18n="successMsg">تم استلام طلبك! هديتك جاية على طاولتك.</p>
+        </div>
 
-        const sectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+        <div class="error-state" id="errorState" hidden>
+          <p data-i18n="errorMsg">صار في خلل بإرسال الطلب. نادِ النادل مباشرة.</p>
+        </div>
 
-        sections.forEach(section => sectionObserver.observe(section));
+        <div class="already-ordered-state" id="alreadyOrderedState" hidden style="margin-top:20px; text-align:center; color:var(--accent-gold);">
+          <svg viewBox="0 0 24 24" fill="none" style="width:40px; height:40px; margin-bottom:10px;" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12 8V12L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p data-i18n="alreadyOrderedMsg" style="font-weight:700;">لقد قمت بطلب هديتك مسبقاً! نراكم في مناسبات قادمة.</p>
+        </div>
+      </div>
+    </section>
 
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
+    <footer class="site-footer">
+      <p data-i18n="footerText">مقدمة من <span class="restaurant-name-slot">Gamarde IQ</span> © 2026</p>
+    </footer>
+  </main>
+</div>
 
-        // تدوير الخلفية
-        setInterval(() => {
-            images[currentImgIndex].classList.remove('active');
-            currentImgIndex = (currentImgIndex + 1) % images.length;
-            images[currentImgIndex].classList.add('active');
-        }, 6500);
-
-        function celebrate() {
-            confetti({
-                particleCount: 150,
-                spread: 80,
-                origin: { y: 0.6 },
-                colors: ['#d4af37', '#ffffff', '#f1e5ac']
-            });
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(212, 175, 55, 0.4)";
-            stars.forEach(s => {
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-                ctx.fill();
-                s.y -= s.v;
-                if(s.y < 0) s.y = canvas.height;
-            });
-            requestAnimationFrame(animate);
-        }
-        animate();
-    </script>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>توليد QR للموقع</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: #F6F2E8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 18px;
+    padding: 20px;
+  }
+  input {
+    width: 100%;
+    max-width: 360px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid #C7D6C4;
+    font-size: 1rem;
+    text-align: center;
+  }
+  #qrHolder {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 12px 32px -12px rgba(34,48,31,0.25);
+  }
+  button {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: #2F4A3C;
+    color: #F6F2E8;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  p { color: #2F4A3C; opacity: 0.7; font-size: 0.85rem; text-align: center; max-width: 340px; }
+</style>
+</head>
+<body>
+  <h2 style="color:#2F4A3C;">مولّد رمز QR</h2>
+  <p>حط رابط موقعك الجاهز على GitHub Pages تحت، وحمّل الصورة تحطها بطاولات المطعم.</p>
+  <input type="text" id="urlInput" placeholder="https://username.github.io/gamarde-worldcup-gift/" value="https://username.github.io/gamarde-worldcup-gift/">
+  <div id="qrHolder"></div>
+  <button id="downloadBtn">تحميل QR</button>
+
+  <script>
+    const holder = document.getElementById("qrHolder");
+    const urlInput = document.getElementById("urlInput");
+    let qr;
+
+    function render() {
+      holder.innerHTML = "";
+      qr = new QRCode(holder, {
+        text: urlInput.value.trim(),
+        width: 260,
+        height: 260,
+        colorDark: "#2F4A3C",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    }
+
+    urlInput.addEventListener("input", render);
+    render();
+
+    document.getElementById("downloadBtn").addEventListener("click", () => {
+      const img = holder.querySelector("img") || holder.querySelector("canvas");
+      const link = document.createElement("a");
+      link.download = "gamarde-worldcup-qr.png";
+      link.href = img.src || img.toDataURL("image/png");
+      link.click();
+    });
+  </script>
+</body>
+</html>
